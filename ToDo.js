@@ -16,7 +16,7 @@ export default class ToDo extends Component {
     isCompleted: false,
   };
   render() {
-    const {isCompleted} = this.state;
+    const {isCompleted, isEditing} = this.state;
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={this._toggleComplete}>
@@ -27,7 +27,36 @@ export default class ToDo extends Component {
             ]}
           />
         </TouchableOpacity>
-        <Text style={styles.text}>Iam to do</Text>
+        <Text
+          style={[
+            styles.text,
+            isCompleted ? styles.completedText : styles.uncompletedText,
+          ]}>
+          Iam to do
+        </Text>
+
+        {isEditing ? (
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._finishEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>✅</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._startEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>📝</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>❌</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
@@ -39,6 +68,14 @@ export default class ToDo extends Component {
       };
     });
   };
+
+  _startEditing = () => {
+    this.setState({isEditing: true});
+  };
+
+  _finishEditing = () => {
+    this.setState({isEditing: false});
+  };
 }
 
 const styles = StyleSheet.create({
@@ -48,6 +85,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   text: {
     fontWeight: "600",
@@ -60,7 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: "red",
     borderWidth: 3,
-    marginRight: 20,
+    marginRight: 10,
   },
   completedCircle: {
     borderColor: "#BBB",
@@ -68,4 +106,23 @@ const styles = StyleSheet.create({
   uncompletedCircle: {
     borderColor: "#F23567",
   },
+  completedText: {
+    color: "#bbb",
+    textDecorationLine: "line-through",
+  },
+  uncompletedText: {
+    color: "#353839",
+  },
+  columns: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: width / 2,
+  },
+  actions: {flexDirection: "row"},
+  actionContainer: {
+    marginVertical: 10,
+    marginHorizontal: 10,
+  },
+  actionText: {},
 });
