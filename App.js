@@ -11,16 +11,19 @@ import {
   ScrollView,
 } from "react-native";
 import ToDo from "./ToDo";
+import "react-native-get-random-values";
+// import { v1 as uuidv1 } from 'uuid';
 
 const {width, height} = Dimensions.get("window");
 
 export default class App extends React.Component {
   state = {
-    newTodo: "",
+    newToDo: "",
+    toDos: {},
   };
 
   render() {
-    const {newTodo} = this.state;
+    const {newToDo, toDos} = this.state;
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -29,14 +32,17 @@ export default class App extends React.Component {
           <TextInput
             style={styles.input}
             placeholder="new to do"
-            value={newTodo}
+            value={newToDo}
             onChangeText={this._controllNewToDo}
             placeholderTextColor="#999"
             returnKeyType={"done"}
             autoCorrect={false}
+            onSubmitEditing={this._addTodo}
           />
           <ScrollView contentContainerStyle={styles.newTodos}>
-            <ToDo text={"i am todozzzz"} />
+            {Object.values(toDos).map(toDo => (
+              <ToDo key={toDo.id} {...toDo} />
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -45,8 +51,35 @@ export default class App extends React.Component {
 
   _controllNewToDo = text => {
     this.setState({
-      newTodo: text,
+      newToDo: text,
     });
+  };
+
+  _addTodo = () => {
+    const {newToDo} = this.state;
+
+    if (newToDo !== "") {
+      this.setState(prevState => {
+        const ID = Date.now();
+        const newToDoObject = {
+          [ID]: {
+            id: ID,
+            isCompleted: false,
+            text: newToDo,
+            createdAt: Date.now(),
+          },
+        };
+        const newState = {
+          ...prevState,
+          newToDo: "", // to empty string
+          toDos: {
+            ...prevState.toDos,
+            ...newToDoObject,
+          },
+        };
+        return {...newState};
+      });
+    }
   };
 }
 

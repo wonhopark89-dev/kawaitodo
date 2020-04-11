@@ -147,8 +147,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   actionText: {},
-  TextInput: {
-    marginVertical: 15,
+  input: {
     width: width / 2,
   },
 });
